@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: "Get 2 Gether App",
       home: Home(),
       theme: ThemeData(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         primarySwatch: Colors.blue,
         accentColor: Colors.blueAccent,
       ),

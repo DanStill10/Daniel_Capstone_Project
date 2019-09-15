@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:capstone/pages/home_page.dart';
-import 'package:capstone/pages/groups_page.dart';
+import 'package:capstone/pages/explore_page.dart';
 import 'package:capstone/pages/user_search.dart';
 
 class Home extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _children = [
     HomePage(),
     UserSearchPage(),
-    GroupsPage(),
+    ExplorePage(),
   ];
 
   void onTabTapped(int index) {
@@ -50,12 +50,12 @@ class _HomeState extends State<Home> {
             icon: new Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            title: Text("Groups"),
-            icon: new Icon(Icons.people),
-          ),
-          BottomNavigationBarItem(
             title: Text("Search Users"),
             icon: new Icon(Icons.search),
+          ),
+          BottomNavigationBarItem(
+            title: Text("Discover"),
+            icon: new Icon(Icons.explore),
           ),
         ],
       ),

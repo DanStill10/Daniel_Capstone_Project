@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class GroupsPage extends StatelessWidget {
+class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.lightGreen,
+      color: Colors.yellow,
     );
   }
 }
