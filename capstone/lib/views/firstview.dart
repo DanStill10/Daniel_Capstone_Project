@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:capstone/widgets/custom_dialog.dart';
 
 class FirstView extends StatelessWidget {
   final primaryColor = const Color(0xFF5B89FF);
@@ -46,6 +47,24 @@ class FirstView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {},
+                ),
+                SizedBox(height: _height * 0.05),
+                FlatButton(
+                  child: Text(
+                    'Get Started!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => CustomDialog(
+                        title:"Would you like to create an account?",
+                        description:"With an account your data will be saved and accessable across multiple devices",
+                        primaryButtonText: "Create an Account",
+                        primaryButtonRoute: "/signUp",
+                        secondaryButtonText: "Maybe Later?",
+                        secondaryButtonRoute: "/home",),);
+                  },
                 ),
               ],
             ),
