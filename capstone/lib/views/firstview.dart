@@ -21,50 +21,57 @@ class FirstView extends StatelessWidget {
               children: <Widget>[
                 SizedBox(height: _height * 0.1),
                 Text(
-                  'Welcome',
+                  'Get Together',
                   style: TextStyle(fontSize: 40, color: Colors.white),
                 ),
                 SizedBox(height: _height * 0.05),
                 AutoSizeText(
-                  'Sign in to get started!',
-                  style: TextStyle(fontSize: 25, color: Colors.white),
+                  'Lets Plan your next group outing',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 SizedBox(height: _height * 0.05),
-                RaisedButton(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
+                RaisedButton(color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
+                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
                     child: Text(
-                      'Sign in Here',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      'Sign up',
+                      style: TextStyle(color: primaryColor, fontSize:20 ),
                     ),
-                  ),
-                  onPressed: () {},
-                ),
-                SizedBox(height: _height * 0.05),
-                FlatButton(
-                  child: Text(
-                    'Get Started!',
-                    style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) => CustomDialog(
-                        title:"Would you like to create an account?",
+                        title: "Would you like to create an account?",
                         description:"With an account your data will be saved and accessable across multiple devices",
                         primaryButtonText: "Create an Account",
                         primaryButtonRoute: "/signUp",
                         secondaryButtonText: "Maybe Later?",
-                        secondaryButtonRoute: "/home",),);
+                        secondaryButtonRoute: "/home",
+                      ),
+                    );
                   },
+                ),
+                SizedBox(height: _height * 0.05),
+                FlatButton(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, left: 30.0, right: 30.0),
+                  child: Text(
+                    'Sign in',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                onPressed: (){
+                  Navigator.of(context).pushReplacementNamed("/signIn");
+                },
                 ),
               ],
             ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-//import 'package:capstone/views/firstview.dart';
-import 'package:capstone/home_widget.dart';
+import 'package:capstone/views/firstview.dart';
+import 'package:capstone/views/signup_view.dart';
+import 'package:capstone/widgets/home_widget.dart';
+import 'package:capstone/services/auth_service.dart';
+import 'package:capstone/widgets/provider_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,18 +14,41 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Get 2 Gether App",
-      home: Home(),
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-        accentColor: Colors.blueAccent,
+    return Provider(
+          auth: AuthService(),
+          child: MaterialApp(
+        title: "Get Together App",
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.blue,
+          accentColor: Colors.blueAccent,
+        ),
+        home: HomeController(),
+        routes: <String, WidgetBuilder>{
+          '/home': (BuildContext context) => HomeController(),
+          '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
+          '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
+        },
       ),
-      routes: <String, WidgetBuilder>{
-        "/signUp": (BuildContext context) => Home(),
-        "/home": (BuildContext context) => Home(),
-      },
     );
   }
 }
+
+class HomeController extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final AuthService auth = Provider.of(context).auth;
+    return StreamBuilder<String>(
+      stream: auth.onAuthStateChanged,
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final bool signedIn = snapshot.hasData;
+          return signedIn ? Home(): FirstView();
+        }
+        return CircularProgressIndicator();
+      }
+    );
+  }
+}
+
+

@@ -1,8 +1,10 @@
+import 'package:capstone/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:capstone/pages/home_page.dart';
-import 'package:capstone/pages/explore_page.dart';
-import 'package:capstone/pages/user_search.dart';
+import 'provider_widget.dart';
+import 'package:capstone/views/home_view.dart';
+import 'package:capstone/views/explore_view.dart';
+import 'package:capstone/views/search_view.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,22 +12,19 @@ class Home extends StatefulWidget {
     return _HomeState();
   }
 }
-
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
-
+  
   final List<Widget> _children = [
-    HomePage(),
-    UserSearchPage(),
-    ExplorePage(),
+    HomeView(),
+    SearchView(),
+    ExploreView(),
   ];
-
   void onTabTapped(int index) {
     setState(() {
      _currentIndex = index; 
     });
   }
-
   @override
   Widget build(BuildContext context) {
 
@@ -33,10 +32,24 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Get 2 Gether",
+          "Get Together",
           style: TextStyle(fontWeight: FontWeight.w400),
           textAlign: TextAlign.center,
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.play_circle_outline),
+            onPressed: () async{
+              try{
+                AuthService auth = Provider.of(context).auth;
+                await auth.signOut();
+                print("Signed Out");
+              }catch(e){
+                print(e);
+              }
+            },
+          )
+        ],
       ),
 
       body: _children[_currentIndex],

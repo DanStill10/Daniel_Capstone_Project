@@ -4,7 +4,6 @@ import 'package:flutter/rendering.dart';
 
 class CustomDialog extends StatelessWidget {
   final primaryColor = const Color(0xFF5B89FF);
-  final secondaryColor = const Color(0xBBBCBD);
   final String title,
       description,
       primaryButtonText,
@@ -44,6 +43,7 @@ class CustomDialog extends StatelessWidget {
               ],
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 SizedBox(height: 20.0),
                 AutoSizeText(
@@ -61,7 +61,7 @@ class CustomDialog extends StatelessWidget {
                   maxLines: 5,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: secondaryColor,
+                    color: Colors.grey,
                     fontSize: 18,
                   ),
                 ),
