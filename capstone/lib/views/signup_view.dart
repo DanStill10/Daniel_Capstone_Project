@@ -18,13 +18,12 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
-
   AuthFormType authFormType;
 
   _SignUpViewState({this.authFormType});
 
   final _formKey = GlobalKey<FormState>();
-  String _email, _password, _uName;
+  String _email, _password, _uName, _error;
 
   void switchFormState(String state) {
     _formKey.currentState.reset();
@@ -39,29 +38,37 @@ class _SignUpViewState extends State<SignUpView> {
     }
   }
 
-  //bool validate(){
-  //  final form = _formKey.currentState;
-  //  form.save();
- //   if (form.validate())
- // }
-
-  void submit() async {
+  bool validate() {
     final form = _formKey.currentState;
     form.save();
-    try {
-      final auth = Provider.of(context).auth;
-      if (authFormType == AuthFormType.signIn) {
-        String uid = await auth.signInWithEmailAndPassword(_email, _password);
-        print("Signed in with ID $uid");
-        Navigator.of(context).pushReplacementNamed('/home');
-      } else {
+    if (form.validate()) {
+      form.save();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void submit() async {
+    if (validate()) {
+      try {
+        final auth = Provider.of(context).auth;
+        if (authFormType == AuthFormType.signIn) {
+          String uid = await auth.signInWithEmailAndPassword(_email, _password);
+          print("Signed in with ID $uid");
+          Navigator.of(context).pushReplacementNamed('/home');
+        } else {
           String uid = await auth.createUserWithEmailAndPassword(
-          _email, _password, _uName);
-        print("Signed up with new ID $uid");
-        Navigator.of(context).pushReplacementNamed('/home');
+              _email, _password, _uName);
+          print("Signed up with new ID $uid");
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      } catch (e) {
+        print(e);
+        setState(() {
+          _error = e.message;
+        });
       }
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -70,20 +77,18 @@ class _SignUpViewState extends State<SignUpView> {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
     var children2 = <Widget>[
-      SizedBox(
-        height: _height * 0.10,
-      ),
+      SizedBox(height: _height * 0.05),
+      ShowAlert(),
+      SizedBox(height: _height * 0.05),
       buildHeaderText(),
-      SizedBox(
-        height: 0.5,
-      ),
+      SizedBox(height: 0.5),
       Padding(
         padding: const EdgeInsets.all(25.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: buildInputs() + buildButtons(),
             ),
           ),
@@ -95,7 +100,7 @@ class _SignUpViewState extends State<SignUpView> {
         color: primaryColor,
         height: _height,
         width: _width,
-        child: Column(
+        child: ListView(
           children: children2,
         ),
       ),
@@ -125,6 +130,7 @@ class _SignUpViewState extends State<SignUpView> {
     if (authFormType == AuthFormType.signUp) {
       textFields.add(
         TextFormField(
+          validator: NameValidator.validate,
           style: TextStyle(fontSize: 18.0, color: Colors.grey),
           decoration: buildSignUpDecoration("User Name"),
           onSaved: (value) => _uName = value,
@@ -134,7 +140,7 @@ class _SignUpViewState extends State<SignUpView> {
     textFields.add(SizedBox(height: 20.0));
     textFields.add(
       TextFormField(
-        //validator: EmailValidation.validate,
+        validator: EmailValidator.validate,
         style: TextStyle(fontSize: 18.0, color: Colors.grey),
         decoration: buildSignUpDecoration("Email"),
         onSaved: (value) => _email = value,
@@ -143,13 +149,69 @@ class _SignUpViewState extends State<SignUpView> {
     textFields.add(SizedBox(height: 20.0));
     textFields.add(
       TextFormField(
+        validator: PasswordValidator.validate,
         style: TextStyle(fontSize: 18.0, color: Colors.grey),
         decoration: buildSignUpDecoration("Password"),
         obscureText: true,
         onSaved: (value) => _password = value,
       ),
     );
+    textFields.add(SizedBox(height: 20.0));
+    if (authFormType == AuthFormType.signUp) {
+      textFields.add(
+        TextFormField(
+          style: TextStyle(fontSize: 18.0, color: Colors.grey),
+          decoration: buildSignUpDecoration("Confirm Password"),
+          obscureText: true,
+          validator: (confirmation) {
+            if (confirmation != _password) {
+              return "Confirm Password should match password";
+            } else {
+              return null;
+            }
+          },
+        ),
+      );
+    }
     return textFields;
+  }
+
+  Widget ShowAlert() {
+    if (_error != null) {
+      return Container(
+        color: Colors.redAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                Icons.error_outline,
+              ),
+            ),
+            Expanded(
+              child: AutoSizeText(
+                _error,
+                maxLines: 3,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(height: 0,);
   }
 
   List<Widget> buildButtons() {

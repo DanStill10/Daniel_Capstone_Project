@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.play_circle_outline),
+            icon: Icon(Icons.undo),
             onPressed: () async{
               try{
                 AuthService auth = Provider.of(context).auth;
