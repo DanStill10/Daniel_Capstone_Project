@@ -1,12 +1,13 @@
-import 'package:capstone/widgets/provider_widget.dart';
 import 'package:flutter/material.dart';
-
+import 'package:capstone/widgets/provider_widget.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:capstone/services/auth_service.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 final primaryColor = const Color(0xFF5B89FF);
 
-enum AuthFormType { signIn, signUp, reset }
+enum AuthFormType { signIn, signUp, reset, anonymous }
 
 class SignUpView extends StatefulWidget {
   final AuthFormType authFormType;
@@ -57,11 +58,11 @@ class _SignUpViewState extends State<SignUpView> {
           String uid = await auth.signInWithEmailAndPassword(_email, _password);
           print("Signed in with ID $uid");
           Navigator.of(context).pushReplacementNamed('/home');
-        } else if (authFormType == AuthFormType.reset){
+        } else if (authFormType == AuthFormType.reset) {
           await auth.sendPasswordResetEmail(_email);
           _warning = "A password reset link has been sent to $_email";
           setState(() {
-           authFormType = AuthFormType.signIn; 
+            authFormType = AuthFormType.signIn;
           });
         } else {
           String uid = await auth.createUserWithEmailAndPassword(
@@ -78,47 +79,71 @@ class _SignUpViewState extends State<SignUpView> {
     }
   }
 
+  Future submitAnonymous() async {
+    final auth = Provider.of(context).auth;
+    await auth.singInAnonymously();
+    Navigator.of(context).pushReplacementNamed("/home");
+  }
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
-    var children2 = <Widget>[
-      SizedBox(height: _height * 0.05),
-      ShowAlert(),
-      SizedBox(height: _height * 0.05),
-      buildHeaderText(),
-      SizedBox(height: 0.5),
-      Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: buildInputs() + buildButtons(),
+    if (authFormType == AuthFormType.anonymous) {
+      submitAnonymous();
+      return Scaffold(
+        backgroundColor: primaryColor,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SpinKitChasingDots(
+              color: Colors.white70,
+            ),
+            Text(
+              "Loading",
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
+    } else {
+      var children1 = <Widget>[
+        SizedBox(height: _height * 0.05),
+        showAlerts(),
+        SizedBox(height: _height * 0.05),
+        buildHeaderText(),
+        SizedBox(height: 0.5),
+        Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: buildInputs() + buildButtons(),
+              ),
             ),
           ),
+        )
+      ];
+      return Scaffold(
+        body: Container(
+          color: primaryColor,
+          height: _height,
+          width: _width,
+          child: ListView(
+            children: children1,
+          ),
         ),
-      )
-    ];
-    return Scaffold(
-      body: Container(
-        color: primaryColor,
-        height: _height,
-        width: _width,
-        child: ListView(
-          children: children2,
-        ),
-      ),
-    );
+      );
+    }
   }
 
   AutoSizeText buildHeaderText() {
     String _headerText;
-    if (authFormType == AuthFormType.reset){
+    if (authFormType == AuthFormType.reset) {
       _headerText = "Reset Password";
-    }
-    else if (authFormType == AuthFormType.signUp) {
+    } else if (authFormType == AuthFormType.signUp) {
       _headerText = "Create a New Account";
     } else {
       _headerText = "Sign In";
@@ -137,7 +162,7 @@ class _SignUpViewState extends State<SignUpView> {
   List<Widget> buildInputs() {
     List<Widget> textFields = [];
 
-    if (authFormType == AuthFormType.reset){
+    if (authFormType == AuthFormType.reset) {
       textFields.add(
         TextFormField(
           validator: EmailValidator.validate,
@@ -146,10 +171,12 @@ class _SignUpViewState extends State<SignUpView> {
           onSaved: (value) => _email = value,
         ),
       );
-      textFields.add(SizedBox(height: 15,));
+      textFields.add(SizedBox(
+        height: 15,
+      ));
       return textFields;
     }
-    
+
     if (authFormType == AuthFormType.signUp) {
       textFields.add(
         TextFormField(
@@ -199,7 +226,7 @@ class _SignUpViewState extends State<SignUpView> {
     return textFields;
   }
 
-  Widget ShowAlert() {
+  Widget showAlerts() {
     if (_warning != null) {
       return Container(
         color: Colors.redAccent,
@@ -242,18 +269,19 @@ class _SignUpViewState extends State<SignUpView> {
   List<Widget> buildButtons() {
     String _switchButton, _newFormState, _submitButtonText;
     bool _showForgotPassword = false;
+    bool _showSocialSignIn = true;
     if (authFormType == AuthFormType.signIn) {
       _showForgotPassword = true;
       _switchButton = "Create New Account";
       _newFormState = "signUp";
       _submitButtonText = "Sing In";
-    }else if(authFormType == AuthFormType.reset){
+    } else if (authFormType == AuthFormType.reset) {
       _showForgotPassword = true;
+      _showSocialSignIn = false;
       _switchButton = "Return to Sign In";
       _newFormState = "signIn";
       _submitButtonText = "Submit";
-    }
-    else {
+    } else {
       _switchButton = "Have an Account? Sign In";
       _newFormState = "signIn";
       _submitButtonText = "Sing Up";
@@ -288,12 +316,13 @@ class _SignUpViewState extends State<SignUpView> {
           switchFormState(_newFormState);
         },
       ),
+      buildSocialIcons(_showSocialSignIn),
     ];
   }
 
   Widget showForgotPassword(bool visible) {
     return Visibility(
-          child: FlatButton(
+      child: FlatButton(
         child: Text(
           "Forgot Password?",
           style: TextStyle(color: Colors.white),
@@ -303,6 +332,35 @@ class _SignUpViewState extends State<SignUpView> {
             authFormType = AuthFormType.reset;
           });
         },
+      ),
+      visible: visible,
+    );
+  }
+
+  Widget buildSocialIcons(bool visible) {
+    final _auth = Provider.of(context).auth;
+    return Visibility(
+      child: Column(
+        children: <Widget>[
+          Divider(
+            color: Colors.white,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          GoogleSignInButton(
+            onPressed: () async {
+              try{
+                await _auth.signInWithGoogle();
+                Navigator.of(context).pushReplacementNamed("/home");
+              }catch (e){
+                setState(() {
+                 _warning = e.message; 
+                });
+              }
+            },
+          )
+        ],
       ),
       visible: visible,
     );

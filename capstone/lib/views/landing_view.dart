@@ -19,17 +19,24 @@ class FirstView extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: <Widget>[
-                SizedBox(height: _height * 0.1),
+                SizedBox(height: 150,),
+                Hero(tag: 'logo',
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset('assets/network.png'),
+                ),),
+                SizedBox(height: _height * 0.025),
                 Text(
                   'Get Together',
-                  style: TextStyle(fontSize: 40, color: Colors.white),
+                  style: TextStyle(fontSize: 30, color: Colors.white),
                 ),
-                SizedBox(height: _height * 0.05),
+                SizedBox(height: _height * 0.025),
                 AutoSizeText(
                   'Lets Plan your next group outing',
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
-                SizedBox(height: _height * 0.05),
+                SizedBox(height: _height * 0.03),
                 RaisedButton(color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
@@ -50,7 +57,7 @@ class FirstView extends StatelessWidget {
                         primaryButtonText: "Create an Account",
                         primaryButtonRoute: "/signUp",
                         secondaryButtonText: "Maybe Later?",
-                        secondaryButtonRoute: "/home",
+                        secondaryButtonRoute: "/anonymousSignIn",
                       ),
                     );
                   },

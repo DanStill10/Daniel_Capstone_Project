@@ -2,7 +2,7 @@ import 'package:capstone/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import 'provider_widget.dart';
-import 'package:capstone/views/home_view.dart';
+import 'package:capstone/views/navigation_view.dart';
 import 'package:capstone/views/explore_view.dart';
 import 'package:capstone/views/search_view.dart';
 
@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   
   final List<Widget> _children = [
-    HomeView(),
+    NavigationView(),
     SearchView(),
     ExploreView(),
   ];
@@ -31,6 +31,13 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: Hero(
+          tag: 'logo',
+          child: Container(
+            height: 40,
+            child: Image.asset('assets/network.png'),
+          ),
+        ),
         title: Text(
           "Get Together",
           style: TextStyle(fontWeight: FontWeight.w400),

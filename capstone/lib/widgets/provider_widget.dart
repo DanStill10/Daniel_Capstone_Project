@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:capstone/services/auth_service.dart';
 
 class Provider extends InheritedWidget{

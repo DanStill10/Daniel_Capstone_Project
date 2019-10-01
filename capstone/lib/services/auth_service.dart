@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final Firestore _fireStore = Firestore.instance;
 
   Stream<String> get onAuthStateChanged =>
       _firebaseAuth.onAuthStateChanged.map(
@@ -25,6 +27,10 @@ class AuthService {
 
     // Update the username
     await updateUserName(name, authResult.user);
+    _fireStore.collection('users').add({
+      'username' : name,
+      'id' : authResult.user.uid,
+    });
     return authResult.user.uid;
   }
 

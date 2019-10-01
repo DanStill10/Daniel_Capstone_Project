@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:capstone/views/firstview.dart';
+import 'package:capstone/views/landing_view.dart';
 import 'package:capstone/views/signup_view.dart';
 import 'package:capstone/widgets/home_widget.dart';
 import 'package:capstone/services/auth_service.dart';
@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return Provider(
           auth: AuthService(),
           child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "Get Together App",
         theme: ThemeData(
           brightness: Brightness.dark,
@@ -26,8 +27,10 @@ class MyApp extends StatelessWidget {
         home: HomeController(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => HomeController(),
+          
           '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
           '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
+          '/anonymousSignIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.anonymous,),
         },
       ),
     );
