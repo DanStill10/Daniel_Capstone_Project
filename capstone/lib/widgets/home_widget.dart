@@ -1,6 +1,5 @@
 import 'package:capstone/services/auth_service.dart';
 import 'package:flutter/material.dart';
-
 import 'provider_widget.dart';
 import 'package:capstone/views/navigation_view.dart';
 import 'package:capstone/views/explore_view.dart';

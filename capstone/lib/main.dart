@@ -1,10 +1,11 @@
+import 'package:capstone/views/navigation_view.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:capstone/views/landing_view.dart';
 import 'package:capstone/views/signup_view.dart';
 import 'package:capstone/widgets/home_widget.dart';
 import 'package:capstone/services/auth_service.dart';
-import 'package:capstone/widgets/provider_widget.dart';
+import 'widgets/provider_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,10 +28,10 @@ class MyApp extends StatelessWidget {
         home: HomeController(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => HomeController(),
-          
           '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
           '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
           '/anonymousSignIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.anonymous,),
+          '/navigation': (BuildContext context) => NavigationView(),
         },
       ),
     );
@@ -48,7 +49,9 @@ class HomeController extends StatelessWidget {
           final bool signedIn = snapshot.hasData;
           return signedIn ? Home(): FirstView();
         }
-        return CircularProgressIndicator();
+        return SpinKitChasingDots(
+              color: Colors.white70,
+            );
       }
     );
   }

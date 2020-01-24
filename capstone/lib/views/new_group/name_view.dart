@@ -1,16 +1,20 @@
+import 'package:capstone/views/group_chatview.dart';
+import 'package:capstone/services/data_service.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:capstone/models/Group.dart';
 import 'package:capstone/main.dart';
-import 'category_view.dart';
 
 class NewGroupNameView extends StatelessWidget {
   final Group group;
+  final DataService _dataService = new DataService();
   NewGroupNameView({Key key, @required this.group}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     TextEditingController _nameController = new TextEditingController();
-    _nameController.text = group.name;
+    group.name = _nameController.text;
+    DocumentReference documentReference;
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Group - Name"),
@@ -27,11 +31,15 @@ class NewGroupNameView extends StatelessWidget {
               ),
             ),
             RaisedButton(
-              child: Text("Continue"),
+              child: Text("Create Group"),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-              onPressed: () {
+              onPressed: () async{
                 group.name = _nameController.text;
-                Navigator.push(context, MaterialPageRoute(builder: (context) => NewGroupCategoryView(group: group,)));
+                _dataService.createGroup(group).then((doc){
+                  print('Document Created with ID:'+ doc.documentId);
+                  documentReference= doc;
+                });
+                MaterialPageRoute(builder: (context) => GroupChat(groupId:documentReference.documentID));
               },
             )
           ],

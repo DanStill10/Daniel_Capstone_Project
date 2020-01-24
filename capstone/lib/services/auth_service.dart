@@ -28,6 +28,7 @@ class AuthService {
     // Update the username
     await updateUserName(name, authResult.user);
     _fireStore.collection('users').add({
+      'email' : email,
       'username' : name,
       'id' : authResult.user.uid,
     });
@@ -91,6 +92,10 @@ class AuthService {
         idToken: _googleAuth.idToken,
         accessToken: _googleAuth.accessToken,
     );
+     _fireStore.collection('users').add({
+      'email' : account.email,
+      'id' : (await _firebaseAuth.signInWithCredential(credential)).user.uid,
+    });
     return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
   }
 

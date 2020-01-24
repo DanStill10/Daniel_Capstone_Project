@@ -10,10 +10,13 @@ class SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      color: primaryColor,
-      onPressed: callback,
-      child: Text(text),
+    return ButtonTheme(
+      height: 58.0,
+      child: FlatButton(
+        color: primaryColor,
+        onPressed: callback,
+        child: Text(text,style: TextStyle(fontSize: 25.0),),
+      ),
     );
   }
 }

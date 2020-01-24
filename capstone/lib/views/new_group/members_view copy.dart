@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:capstone/main.dart';
+//import 'package:capstone/main.dart';
 import 'package:capstone/models/Group.dart';
 
-class NewGroupCategoryView extends StatelessWidget {
+class NewGroupMembersView extends StatelessWidget {
   final Group group;
-  NewGroupCategoryView({Key key, @required this.group}) : super(key: key);
+  NewGroupMembersView({Key key, @required this.group}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
